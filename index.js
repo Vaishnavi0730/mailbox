@@ -58,7 +58,7 @@ app.get('/forgot', function (req, res){
 	 res.render("forgot");
 });
 
-app.post('/forward', function (req, res){
+app.post('/forwardsent', function (req, res){
 	var from= req.body.from;
 	var to= req.body.to;
 	var id= req.body.id;
@@ -86,6 +86,48 @@ app.post('/forward', function (req, res){
             throw err;
         }
         console.log("Record Inserted Successfully Into Inbox  collection");
+        var query = { from: from };
+        db.collection("inbox").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            res.render('sent',{'data': result,'email':from})
+        });
+    });
+    });
+});
+
+app.post('/forwardinbox', function (req, res){
+	var from= req.body.from;
+	var to= req.body.to;
+	var id= req.body.id;
+
+    var query = {_id: new mongodb.ObjectID(id)};
+
+    db.collection("inbox").find(query).toArray(function(err, result) {
+        if (err) throw err;
+        console.log(result[0].from)
+        console.log(result[0].to)
+        console.log(result[0].message)
+        console.log(result[0].subject)
+
+        var data = {
+            "to": to,
+            "from": from,
+            "subject": result[0].subject,
+            "message": result[0].message,
+            "date": new Date()
+        }
+
+        console.log(data)
+        db.collection('inbox').insertOne(data,(err,collection)=>{
+        if(err){
+            throw err;
+        }
+        console.log("Record Inserted Successfully Into Inbox  collection");
+        var query = { to: from };
+        db.collection("inbox").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            res.render('inbox',{'data': result,'email':from})
+        });
     });
     });
 });

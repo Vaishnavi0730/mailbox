@@ -112,12 +112,12 @@
                     <!-- Modal body -->
                     <div class="modal-body">
                       <div class="container">
-                      <form action="/forward" method="POST">
+                      <form action="/forwardsent" method="POST">
                             <input type="hidden" name="id" id="id" value=<%= data[i]._id %>>
                             <input type="hidden" name="from" id="from" value=<%= email%>>
                             <label for="to">To</label>
                             <input type="email" id="to" name="to" placeholder="To mail ID" required>
-                            <input type="submit" value="Submit" data-dismiss="modal"><br><br>
+                            <input type="submit" value="Submit"><br><br>
                       </form>
                       </div>
                     </div> 
