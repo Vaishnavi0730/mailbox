@@ -4,6 +4,7 @@ var express = require("express")
 var bodyParser = require("body-parser")
 var mongoose = require("mongoose")
 var PORT = process.env.PORT || 8080;
+var mongodb = require('mongodb');
 
 const app = express()
 
@@ -71,8 +72,6 @@ app.post('/back', urlencodedParser, function (req, res){
 
 app.post('/inbox', urlencodedParser, function (req, res){
 	var email= req.body.email;
-
-
     var query = { to: email };
 
     db.collection("inbox").find(query).toArray(function(err, result) {
@@ -90,12 +89,45 @@ app.post('/sent', urlencodedParser, function (req, res){
 
     db.collection("inbox").find(query).toArray(function(err, result) {
         if (err) throw err;
-        res.render('inbox',{'data': result,'email':email})
+        res.render('sent',{'data': result,'email':email})
 
     });
 });
 
+app.post('/deleteinbox', urlencodedParser, function (req, res){
+	var id= req.body.id;
+    var email = req.body.email;
+    var query = {_id: new mongodb.ObjectID(id)};
 
+    db.collection("inbox").deleteOne(query, function(err, obj) {
+        if (err) throw err;
+        console.log('1 document deleteed');
+
+        var query = { to: email };
+        db.collection("inbox").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            res.render('inbox',{'data': result,'email':email})
+        });
+      });
+});
+
+app.post('/deletesent', urlencodedParser, function (req, res){
+	var id= req.body.id;
+    var email = req.body.email;
+    var query = {_id: new mongodb.ObjectID(id)};
+
+    db.collection("inbox").deleteOne(query, function(err, obj) {
+        if (err) throw err;
+        console.log('1 document deleteed')
+        
+        var query = { from: email };
+        db.collection("inbox").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            res.render('sent',{'data': result,'email':email})
+
+        });
+      });
+});
 //-------------------------------------------//
 
 //-------------------------------------------//
@@ -154,7 +186,25 @@ app.post('/signedin', urlencodedParser, function (req, res){
                     if(err){
                         throw err;
                     }
-                    console.log("Record Inserted Successfully Into Sign In collection");
+                    else{
+                        console.log("Record Inserted Successfully Into Sign In collection");
+
+                        var data3 = {
+                            "to": email,
+                            "from": "Y2Vsupportstaff@y3v.com",
+                            "subject": "Welcome Message",
+                            "message": "Hello " + fname +" " + lname + " welcome to our mail service hope you have a good experience",
+                            "date": new Date()
+                        }
+                    
+                        db.collection('inbox').insertOne(data3,(err,collection)=>{
+                            if(err){
+                                throw err;
+                            }
+                            console.log("Record Inserted Successfully Into Inbox  collection");
+                        });
+
+                    }                
                 });
         
                 db.collection('login').insertOne(data2,(err,collection)=>{

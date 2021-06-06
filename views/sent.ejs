@@ -60,7 +60,7 @@
             background-color: rgb(37, 108, 119);
           }
     </style>
-    <title>Inbox</title>
+    <title>Sent</title>
 </head>
 <body>
     <br>
@@ -70,7 +70,7 @@
     </form>
 
     <div class="container">
-    <h1> <strong>Received Mail</strong></h1>
+    <h1> <strong>Sent Mail</strong></h1>
     <table>
         <tr>
             <th>From</th>
@@ -88,16 +88,17 @@
              <td><%= data[i].subject %></td>
              <td><%= data[i].message %></td>
              <td><%= data[i].date %></td>
-             <form action="/deleteinbox" method="POST">
+             <form action="/deletesent" method="POST">
               <input type="hidden" name="email" id="email" value=<%= email%> >
               <input type="hidden" name="id" id="id" value=<%= data[i]._id %>>
              <td><button class="btn"><i class="fa fa-trash"></i></button></td>
             </form>
-            <form action="/forwardinbox" method="POST">
-              <input type="hidden" name="email" id="email" value=<%= email%> >      
-              <input type="hidden" name="id" id="id" value=<%= data[i]._id %>>
-             <td><button class="btn"><i class="fa fa-mail-forward"></i></button></td>
-            </form>
+
+            <form action="/forwardsent" method="POST">
+                <input type="hidden" name="email" id="email" value=<%= email%> >
+                <input type="hidden" name="id" id="id" value=<%= data[i]._id %>>
+               <td><button class="btn"><i class="fa fa-mail-forward"></i></button></td>
+              </form>
            </tr>
         <% } %>
     </table>

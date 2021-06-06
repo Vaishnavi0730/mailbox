@@ -9,7 +9,11 @@
     <title>Mail</title>
     <style>
       body { 
+<<<<<<< HEAD
 			text-align: left;
+=======
+	text-align: left;
+>>>>>>> a243f8c94aaa2acbb72a98fe85583475208f2252
         font-family: 'Times New Roman', Times, serif;
         background-color: #cccccc; 
         background: url(m4.0.png) no-repeat center center fixed; 
@@ -46,8 +50,11 @@
 </head>
 <body>
   <br><br>
+<form action="/" method="GET">
+    <button class="btn float-right" style="margin-right:5em"><i class="fa fa-sign-out"></i> Logout</button>
+</form>
 <div class="container">
-    <h2 style="color: rgb(26, 74, 82); font-size: 3em"><strong> Welcome <%= email %></strong> </h2>
+    <h2 style="color: rgb(26, 74, 82); font-size: 3em"><strong> WELCOME <%= email.toUpperCase() %></strong> </h2>
     <br>
 </div>
 
@@ -68,10 +75,6 @@
     <button class="btn"><i class="fa fa-envelope-o"></i> Sent</button>
 </form>
 <br>
-
-<form action="/" method="GET">
-    <button class="btn"><i class="fa fa-sign-out"></i> Logout</button>
-</form>
 </div>
 </body>
 </html>
