@@ -32,8 +32,7 @@ mongoose.connect(uri,{
 });
 
 var db = mongoose.connection;
-// db.createCollection('signin')
-// db.createCollection('login')
+
 
 db.on('error',()=>console.log("Error in Connecting to Database"));
 db.once('open',()=>console.log("Connected to Database"))
@@ -45,6 +44,8 @@ app.get('/', function (req, res) {
     res.set({
         "Allow-access-Allow-Origin": '*'
     })
+    // let alert = require('alert');  
+    // alert("message")
     
 	 res.render("login");
 })
@@ -57,6 +58,37 @@ app.get('/forgot', function (req, res){
 	 res.render("forgot");
 });
 
+app.post('/forward', function (req, res){
+	var from= req.body.from;
+	var to= req.body.to;
+	var id= req.body.id;
+
+    var query = {_id: new mongodb.ObjectID(id)};
+
+    db.collection("inbox").find(query).toArray(function(err, result) {
+        if (err) throw err;
+        console.log(result[0].from)
+        console.log(result[0].to)
+        console.log(result[0].message)
+        console.log(result[0].subject)
+
+        var data = {
+            "to": to,
+            "from": from,
+            "subject": result[0].subject,
+            "message": result[0].message,
+            "date": new Date()
+        }
+
+        console.log(data)
+        db.collection('inbox').insertOne(data,(err,collection)=>{
+        if(err){
+            throw err;
+        }
+        console.log("Record Inserted Successfully Into Inbox  collection");
+    });
+    });
+});
 
 app.post('/compose', urlencodedParser, function (req, res){
 	var email= req.body.email;
@@ -66,7 +98,7 @@ app.post('/compose', urlencodedParser, function (req, res){
 
 app.post('/back', urlencodedParser, function (req, res){
 	var email= req.body.email;
-
+    
 	 res.render("mail",{'email':email});
 });
 
@@ -193,7 +225,7 @@ app.post('/signedin', urlencodedParser, function (req, res){
                             "to": email,
                             "from": "Y2Vsupportstaff@y3v.com",
                             "subject": "Welcome Message",
-                            "message": "Hello " + fname +" " + lname + " welcome to our mail service hope you have a good experience",
+                            "message": "Hello and  welcome to our mail service hope you have a good experience",
                             "date": new Date()
                         }
                     
